@@ -1,0 +1,73 @@
+package com.example.chat;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+
+public class Message {
+    private int id;
+    private User sender;
+    private User receiver;
+    private String content;
+    private LocalDateTime sentAt;
+    private static final DateTimeFormatter TIME_FORMAT = DateTimeFormatter.ofPattern("HH:mm");
+    private static final DateTimeFormatter DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("dd/MM HH:mm");
+
+    public Message(int id, User sender, User receiver, String content) {
+        if (sender == null || receiver == null) {
+            throw new IllegalArgumentException("Sender and receiver are required");
+        }
+        if (content == null || content.isBlank()) {
+            throw new IllegalArgumentException("Content cannot be empty");
+        }
+        this.id = id;
+        this.sender = sender;
+        this.receiver = receiver;
+        this.content = content;
+        this.sentAt = LocalDateTime.now();
+    }
+
+    public Message(int id, User sender, User receiver, String content, LocalDateTime sentAt) {
+        if (sender == null || receiver == null) {
+            throw new IllegalArgumentException("Sender and receiver are required");
+        }
+        if (content == null || content.isBlank()) {
+            throw new IllegalArgumentException("Content cannot be empty");
+        }
+        this.id = id;
+        this.sender = sender;
+        this.receiver = receiver;
+        this.content = content;
+        this.sentAt = sentAt;
+    }
+
+    public int getId() { return this.id; }
+    
+    public User getSender() {
+        return this.sender;
+    }
+
+    public User getReceiver() {
+        return this.receiver;
+    }
+
+    public String getContent() {
+        return this.content;
+    }
+
+    public LocalDateTime getSentAt() {
+        return this.sentAt;
+    }
+
+    public String getTimeText() {
+        boolean today = sentAt.toLocalDate().equals(java.time.LocalDate.now());
+        return sentAt.format( today ? TIME_FORMAT : DATE_TIME_FORMAT);
+    }
+    @Override
+    public String toString() {
+        return "[" + this.sentAt + "] " + sender.getName() + "->" + receiver.getName() + " : " + this.content;
+    }
+
+
+}
+
