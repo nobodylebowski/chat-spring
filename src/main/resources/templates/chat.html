@@ -1,0 +1,9 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><title>Chat</title></head>
+<body>
+    <h1>Chat</h1>
+    <p>Logged in as <span th:text="${name}"></span></p>
+    <form method="post" action="/logout"><button>Logout</button></form>
+</body>
+</html>
