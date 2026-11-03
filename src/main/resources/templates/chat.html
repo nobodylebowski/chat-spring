@@ -1,9 +1,45 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head><meta charset="UTF-8"><title>Chat</title></head>
+<head>
+    <meta charset="UTF-8">
+    <title>Chat</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
 <body>
-    <h1>Chat</h1>
-    <p>Logged in as <span th:text="${name}"></span></p>
-    <form method="post" action="/logout"><button>Logout</button></form>
+    <div class="layout">
+        <aside class="sidebar">
+            <p>Logged in as <b th:text="${me.name}"></b></p>
+            <h2>Users</h2>
+            <ul>
+                <li th:each="u : ${users}">
+                    <span class="dot" th:attr="data-user=${u.id}"></span>
+                    <a th:href="@{/chat(with=${u.id})}" th:text="${u.name}"></a>
+                </li>
+            </ul>
+            <form method="post" action="/logout"><button>Logout</button></form>
+        </aside>
+
+        <main class="conversation">
+            <p th:if="${error}" th:text="${error}"></p>
+            <p th:if="${other == null and error == null}">Select a user to start chatting</p>
+
+            <div th:if="${other != null}" style="display:contents">
+                <h2 th:text="'Conversation with ' + ${other.name}"></h2>
+                <div id="messages" th:attr="data-me=${me.id},data-other=${other.id}">
+                    <p th:each="m : ${messages}">
+                        <small th:text="${m.timeText}"></small>
+                        <b th:text="${m.sender.name} + ':'"></b>
+                        <span th:text="${m.content}"></span>
+                    </p>
+                </div>
+                <form id="sendForm" method="post" action="/send">
+                    <input type="hidden" name="to" th:value="${other.id}">
+                    <input type="text" id="content" name="content" required autofocus autocomplete="off">
+                    <button>Send</button>
+                </form>
+            </div>
+        </main>
+    </div>
+    <script src="/chat.js" defer></script>
 </body>
 </html>
