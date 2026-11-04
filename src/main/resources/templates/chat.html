@@ -12,7 +12,7 @@
             <h2>Users</h2>
             <ul>
                 <li th:each="u : ${users}">
-                    <span class="dot" th:attr="data-user=${u.id}"></span>
+                    <span class="dot" th:classappend="${online.contains(u.id)} ? 'online'" th:attr="data-user=${u.id}"></span>
                     <a th:href="@{/chat(with=${u.id})}" th:text="${u.name}"></a>
                 </li>
             </ul>

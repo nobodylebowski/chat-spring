@@ -13,11 +13,14 @@ public class ChatController {
 
     private final UserService userService;
     private final MessageService messageService;
+    private final ChatSocketHandler socketHandler;
 
     public ChatController(UserService userService,
-                          MessageService messageService) {
+                          MessageService messageService,
+                          ChatSocketHandler socketHandler) {
         this.userService = userService;
         this.messageService = messageService;
+        this.socketHandler = socketHandler;
     }
 
     @GetMapping("/chat")
@@ -26,6 +29,7 @@ public class ChatController {
         User me = (User) session.getAttribute("user");
         if (me == null) return "redirect:/";
 
+        model.addAttribute("online", socketHandler.onlineUserIds());
         model.addAttribute("me", me);
         model.addAttribute("users", userService.findAllExcept(me.getId()));
 
@@ -51,7 +55,8 @@ public class ChatController {
         if (other == null) return ResponseEntity.badRequest().build();
 
         try {
-            messageService.send(me, other, content);
+            Message saved = messageService.send(me, other, content);
+            socketHandler.pushMessage(saved);
             return ResponseEntity.noContent().build();
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().build();

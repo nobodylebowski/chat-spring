@@ -66,7 +66,8 @@ let ws = null;
 
 
 function connect() {
-    ws = new WebSocket('ws://' + location.hostname + ':8887');
+    const proto = location.protocol === 'https:' ? 'wss://' : 'ws://';
+    ws = new WebSocket(proto + location.host + '/ws');
 
 
     ws.onopen= () => {
